@@ -1,0 +1,74 @@
+            int Keylength;
+	    AES encryptor = new AES();
+            //Генерируем ключ и и формируем таблицу умножения в поле Галуа GF(256)
+            GenerateKey(Keylength);
+            encryptor.SetMultTable();
+            //в зависимости от длины ключа(в битах) устанавливаем параметры Nr и Nk
+            if (Keylength == 128)
+            {
+                encryptor.SetParameters(10, 4);                
+            }
+            if (Keylength == 192)
+            {
+                encryptor.SetParameters(12, 6);                
+            }
+            if (Keylength == 256)
+            {
+                encryptor.SetParameters(14, 8);                
+            }
+            //шифрование
+            byte[] temp = File.ReadAllBytes("source.txt");
+            byte[] text;
+            //дополняем массив текст нулевыми символами, если количество байт в исходнодном тексте не кратно 16
+            int size=temp.Length;
+            if (temp.Length%16!=0)
+            {                
+                while (size%16!=0)
+                {
+                    size++;
+                }
+                text = new byte[size];
+                for (int i = 0; i < temp.Length; i++)
+                    text[i] = temp[i];
+                for (int i = temp.Length; i < size; i++)
+                    text[i] = 0;
+            }
+            else
+            {
+                text = temp;
+            }
+
+
+//генерирует случайный ключ длины length
+        static void GenerateKey(int length)
+        {
+            
+            Random a = new Random();
+            if (length == 128)
+            {
+                key = new byte[16];
+                for (int i = 0; i < 16; i++)
+                {
+                    key[i] = (byte)a.Next(0, 255);                    
+                }
+
+            }
+            if (length == 192)
+            {
+                key = new byte[24];
+                for (int i = 0; i < 24; i++)
+                {
+                    key[i] = (byte)a.Next(0, 255);                    
+                }
+
+            }
+            if (length == 256)
+            {
+                key = new byte[32];
+                for (int i = 0; i < 32; i++)
+                {
+                    key[i] = (byte)a.Next(0, 255);                    
+                }
+
+            }
+        }
